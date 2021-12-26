@@ -29,6 +29,28 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     protected int magicTimes = 3;
 
 
+    protected Files file;
+    private int animalsCounter = 0;
+    private int grassesCounter = 0;
+    private int lifeTime = 0;
+
+
+
+    public int[] countData(int day){
+        animalsCounter += animals.size();
+        grassesCounter += grasses.size();
+        return new int[]{animalsCounter, grassesCounter, lifeTime/(day + 1)};
+    }
+
+    public int avgEnergy(){
+        int enacnt = 0;
+        for(Animal animal : animals){
+            enacnt += animal.getEnergy();
+        }
+        if(!animals.isEmpty()) return enacnt/animals.size();
+        else return 0;
+    }
+
     public void removeAnimal(Vector2d key, Animal object){
         if(this.animalsLinked.get(key) != null){
             this.animalsLinked.get(key).remove(object);
@@ -80,7 +102,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         return grasses.get(position);
     }
 
-
     public void magicEvolution(){
         if(animals.size() == 5 && magicField && magicTimes > 0){
             Animal newAnim;
@@ -124,7 +145,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                 }
             }
         }
-        System.out.println(animals);
+//        System.out.println(animals);
     }
 
     public void eatGrass(Animal animal, Vector2d position, int part){
@@ -182,10 +203,11 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         }
     }
 
-    public void removeDeadAnimals(){
+    public void removeDeadAnimals(int day){
         for(int i = 0; i < animals.size(); i++){
             Animal anim = animals.get(i);
             if(anim.isDead()){
+                lifeTime += day;
                 removeAnimal(anim.getPosition(), anim);
                 animals.remove(anim);
                 anim.removeObserver(this);
@@ -295,4 +317,8 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     public int getGrassesSize(){
         return grasses.size();
     }
+
+    public Files getFile() {return file;}
+
+    public int getLifeTime() {return lifeTime;}
 }

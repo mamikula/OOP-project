@@ -7,11 +7,6 @@ import java.util.Map;
 
 public class RectangularMap extends AbstractWorldMap {
 
-//    protected HashMap<Vector2d, LinkedList<Animal>> animalsLinked;
-//    protected LinkedList<Animal> animals = new LinkedList<>();
-//    protected Map<Vector2d, Grass> grasses;
-
-
 
     public RectangularMap(int mapHeight, int mapWidth, double jungleRatio, int startEnergy, int animalsAtStart, int plantEnergy, int moveEnergy, boolean magic){
 //map
@@ -24,6 +19,7 @@ public class RectangularMap extends AbstractWorldMap {
         this.animalsLinked  = new HashMap<Vector2d, LinkedList<Animal>>();
         this.moveEnergy = (-1)*moveEnergy;
         this.magicField = magic;
+        this.file = new Files("Rectangular_map_data.csv");
 
 //sawanna
         this.sawannaLL = new Vector2d(0, 0);

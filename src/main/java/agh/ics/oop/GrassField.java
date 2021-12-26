@@ -20,6 +20,7 @@ public class GrassField extends AbstractWorldMap {
         this.animalsLinked  = new HashMap<Vector2d, LinkedList<Animal>>();
         this.moveEnergy = (-1)*moveEnergy;
         this.magicField = magic;
+        this.file = new Files("GrassField_data.csv");
 
 //sawanna
         this.sawannaLL = new Vector2d(0, 0);
@@ -30,11 +31,6 @@ public class GrassField extends AbstractWorldMap {
         this.jungleWidth = (int) (mapWidth * factor);
         this.jungleLL = new Vector2d(mapWidth/2 - jungleWidth / 2, mapHeight / 2 - jungleHeight / 2);
         this.jungleUR = new Vector2d(mapWidth/2 + jungleWidth / 2, mapHeight / 2 + jungleHeight / 2);
-//        System.out.println(jungleLL);
-//        System.out.println(jungleUR);
-//        System.out.println(jungleHeight);
-//        System.out.println(jungleWidth);
-
     }
 
     @Override

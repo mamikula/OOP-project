@@ -9,19 +9,17 @@ public class Files {
         this.myFile = new File(fileName);
     }
 
-
-
-    public void WriteToFile(int day, int animals, int grasses) {
+    public void writeToFile(int day, int animals, int grasses, int energy, int avgLife) {
         try {
-            String newLine = day + "   " + animals + "   " + grasses + "\r\n";
+            String newLine = day + "   " + animals + "   " + grasses + "   " + energy + "   " + avgLife + "\r\n";
             Writer writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(myFile, true), "UTF-8"));
 
             writer.append(newLine);
             writer.close();
-            System.out.println("Successfully wrote to the file.");
+//            System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+//            System.out.println("An error occurred.");
             e.printStackTrace();
         }
     }

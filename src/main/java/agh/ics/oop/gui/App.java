@@ -43,16 +43,6 @@ public class App extends Application implements ISimulationObserver{
     Thread engineThread;
     Thread engineThread2;
 
-    //files
-    private Files grassData;
-    private Files recData;
-    private int animalsCount1 = 10;
-    private int grassesCount1 = 2;
-
-    private int animalsCount2 = 10;
-    private int grassesCount2 = 2;
-
-
 
 
 
@@ -107,11 +97,16 @@ public class App extends Application implements ISimulationObserver{
         TextField rectangularMagic = new TextField();
         initGrid.add(rectangularMagic, 1, 8);
 
+        Label startAnimals = new Label("Animals at start:");
+        initGrid.add(startAnimals, 0, 9);
+        TextField animalsAtStart = new TextField();
+        initGrid.add(animalsAtStart, 1, 9);
+
         Button btn = new Button("Send");
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(btn);
-        initGrid.add(hbBtn, 1, 9);
+        initGrid.add(hbBtn, 1, 10);
 
         initGrid.setPrefSize(200,300);
         //InputFrom section
@@ -125,15 +120,16 @@ public class App extends Application implements ISimulationObserver{
             Constants.setJungleRatio(Double.parseDouble(jungleRatio.getText()));
             Constants.setGrassMagic(Boolean.parseBoolean(grassMagic.getText()));
             Constants.setRectangularMagic(Boolean.parseBoolean(rectangularMagic.getText()));
+            Constants.setAnimalsAtStart(Integer.parseInt(animalsAtStart.getText()));
 
 
-            this.map = new GrassField(Constants.mapHeight, Constants.mapWidth, Constants.jungleRatio, Constants.startEnergy, 10, Constants.plantEnergy, Constants.moveEnergy, Constants.grassMagic);
+            this.map = new GrassField(Constants.mapHeight, Constants.mapWidth, Constants.jungleRatio, Constants.startEnergy, Constants.animalsAtStart, Constants.plantEnergy, Constants.moveEnergy, Constants.grassMagic);
             this.engine = new SimulationEngine(map);
             engine.addObserver(this);
             this.gridpane = new GridPane();
 
 
-            this.map2 = new RectangularMap(Constants.mapHeight, Constants.mapWidth, Constants.jungleRatio, Constants.startEnergy, 10,Constants.plantEnergy  ,Constants.moveEnergy, Constants.rectangularMagic);
+            this.map2 = new RectangularMap(Constants.mapHeight, Constants.mapWidth, Constants.jungleRatio, Constants.startEnergy, Constants.animalsAtStart,Constants.plantEnergy  ,Constants.moveEnergy, Constants.rectangularMagic);
             this.engine2 = new SimulationEngine(map2);
             engine2.addObserver(this);
             this.gridpane2 = new GridPane();
@@ -141,12 +137,12 @@ public class App extends Application implements ISimulationObserver{
             chartGrid = new GridPane();
             chartGrid.setPrefSize(600, 600);
             grassFieldChart = new LineChartClass();
-            grassFieldChart.printChart(0, map.getAnimalsSize(), map.getGrassesSize());
+            grassFieldChart.printChart(0, map.getAnimalsSize(), map.getGrassesSize(), map.avgEnergy(), map.getLifeTime());
             chartGrid.add(grassFieldChart.getLineChart(), 0, 0);
 
 
             rectangularChart = new LineChartClass();
-            rectangularChart.printChart(0, map2.getAnimalsSize(),  map2.getGrassesSize());
+            rectangularChart.printChart(0, map2.getAnimalsSize(),  map2.getGrassesSize(), map2.avgEnergy(), map.getLifeTime());
             chartGrid.add(rectangularChart.getLineChart(), 0, 1);
             borderPane.setCenter(chartGrid);
 
@@ -207,12 +203,6 @@ public class App extends Application implements ISimulationObserver{
             borderPane.setLeft(gridpaneLeft);
             borderPane.setRight(gridpaneRight);
 
-
-
-            grassData = new Files("grassData.csv");
-            grassData.WriteToFile(0, 10, 2);
-            recData = new Files("recData.csv");
-            recData.WriteToFile(0, 10, 2);
         });
 
 
@@ -304,20 +294,14 @@ public class App extends Application implements ISimulationObserver{
                 day1 += 1;
                 animals = map.getAnimalsSize();
                 grasses = map.getGrassesSize();
-                grassFieldChart.printChart(day1, animals, grasses);
+                grassFieldChart.printChart(day1, animals, grasses, map.avgEnergy(), map.getLifeTime()/(day1 + 1));
 
-                grassData.WriteToFile(day1, animals, grasses);
-                animalsCount1 += animals;
-                grassesCount1 += grasses;
             }
             else {
                 day2 += 1;
                 animals = map2.getAnimalsSize();
                 grasses = map2.getGrassesSize();
-                rectangularChart.printChart(day2, animals, grasses);
-                recData.WriteToFile(day2, animals, grasses);
-                animalsCount2 += animals;
-                grassesCount2 += grasses;
+                rectangularChart.printChart(day2, animals, grasses, map2.avgEnergy(), map2.getLifeTime()/(day2 + 1));
             }
         });
     }

@@ -18,19 +18,6 @@ public class Animal implements IMapElement {
     private int energy;
     public Genes genes;
 
-    public Animal(IWorldMap map) {
-        this.orientation = MapDirection.NORTH;
-        this.position = new Vector2d(2, 2);
-        this.map = map;
-    }
-
-    public Animal(IWorldMap map, Vector2d initialPosition) {
-        this.position = initialPosition;
-        this.map = map;
-        this.orientation = MapDirection.NORTH;
-        this.subscribers = new ArrayList<>();
-    }
-
     //   --------------------New items-----------------------
     public Animal(IWorldMap map, Vector2d initialPosition, int energy) {
         this.position = initialPosition;
@@ -64,18 +51,6 @@ public class Animal implements IMapElement {
 
         return child;
     }
-//losowy ruch zwierzątka
-//    public void rotate() {
-//        int numOfRotation = genes.returnRandomGen();
-//        if (numOfRotation == 0) this.move(MoveDirection.FORWARD);
-//        else if (numOfRotation == 4) this.move(MoveDirection.BACKWARD);
-//        else {
-//            for (int i = 0; i < numOfRotation; i++) {
-//                this.move(MoveDirection.RIGHT);
-//            }
-//        }
-//    }
-
     public float getEnergy() {
         return energy;
     }

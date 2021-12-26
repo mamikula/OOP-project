@@ -9,14 +9,16 @@ public class Constants {
     public static double jungleRatio = 1;
     public static boolean grassMagic = false;
     public static boolean rectangularMagic = false;
+    public static int animalsAtStart = 10;
+//    public static boolean start = false;
 
-
-
-    public static void setStart(boolean start) {
-        Constants.start = start;
+    public static void setAnimalsAtStart(int animalsAtStart) {
+        Constants.animalsAtStart = animalsAtStart;
     }
 
-    public static boolean start = false;
+//    public static void setStart(boolean start) {
+//        Constants.start = start;
+//    }
 
     public static void setMapHeight(int mapHeight) {
         Constants.mapHeight = mapHeight;

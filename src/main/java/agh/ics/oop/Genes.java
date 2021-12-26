@@ -16,7 +16,7 @@ public class Genes {
         this.size = size;
         this.genesNum = genesNum;
         fillRandom();
-//        makeProprielyGen();
+        makeProprielyGen();
     }
 
 
@@ -81,15 +81,6 @@ public class Genes {
     public int returnRandomGen() {
         int rand = (int) (Math.random() * (size));
         return this.genes[rand];
-    }
-
-    @Override
-    public String toString() {
-        String result = "";
-        for (int i = 0; i < size; i++) {
-            result = result + " " + Integer.toString(genes[i]);
-        }
-        return result;
     }
 }
     

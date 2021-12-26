@@ -9,10 +9,9 @@ public class SimulationEngine implements IEngine, Runnable {
     private final AbstractWorldMap map;
     private List<ISimulationObserver> observers = new LinkedList<>();
 
+
     private int moveDelay = 1000;
 //    sawanna
-
-    private double jungleRatio;
 
     public SimulationEngine(AbstractWorldMap map) {
         this.map = map;
@@ -31,25 +30,28 @@ public class SimulationEngine implements IEngine, Runnable {
 
     @Override
     public void run() {
+        int days = 300;
         map.placeAnimalInJungle();
         map.plantGrass();
 
-//        System.out.println(map);
         try {
-            for (int i = 0; i < 300; i++) {
-//                System.out.println(i);
-                map.removeDeadAnimals();
+            for (int i = 0; i < days; i++) {
+                map.removeDeadAnimals(i + i);
                 map.moveAnimals();
                 map.whoCanEat();
                 map.multiplication();
                 map.dayEnergyDeload();
                 map.plantGrass();
                 map.magicEvolution();
-                map.magicEvolution();
-//                System.out.println(map);
+                map.getFile().writeToFile(i, map.getAnimalsSize(), map.getGrassesSize(), map.avgEnergy(), map.getLifeTime()/(i + 1));
+                map.countData(i);
                 changesUpdate();
                 Thread.sleep(moveDelay);
             }
+            int animCnt = map.countData(days)[0];
+            int grasCnt = map.countData(days)[1];
+            int avgLife = map.countData(days)[2];
+            map.getFile().writeToFile(0, animCnt/days, grasCnt/days, map.avgEnergy(), avgLife);
         } catch (InterruptedException e) {
             System.out.println("Interrupdet: " + e.getMessage());
         }
