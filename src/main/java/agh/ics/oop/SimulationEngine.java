@@ -7,10 +7,10 @@ import java.util.List;
 public class SimulationEngine implements IEngine, Runnable {
 
     private final AbstractWorldMap map;
-    private List<ISimulationObserver> observers = new LinkedList<>();
+    private final List<ISimulationObserver> observers = new LinkedList<>();
 
 
-    private int moveDelay = 1000;
+    private final int moveDelay = 1000;
 //    sawanna
 
     public SimulationEngine(AbstractWorldMap map) {
@@ -39,7 +39,7 @@ public class SimulationEngine implements IEngine, Runnable {
                 map.removeDeadAnimals(i + i);
                 map.moveAnimals();
                 map.whoCanEat();
-                map.multiplication();
+                map.multiplication(i + i);
                 map.dayEnergyDeload();
                 map.plantGrass();
                 map.magicEvolution();

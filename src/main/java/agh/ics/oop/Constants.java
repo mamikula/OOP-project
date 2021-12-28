@@ -1,24 +1,20 @@
 package agh.ics.oop;
 
 public class Constants {
-    public static int mapHeight = 5;
-    public static int mapWidth = 5;
-    public static int startEnergy = 100;
-    public static int moveEnergy = 1;
-    public static int plantEnergy = 10;
-    public static double jungleRatio = 1;
-    public static boolean grassMagic = false;
-    public static boolean rectangularMagic = false;
-    public static int animalsAtStart = 10;
-//    public static boolean start = false;
+    public static int mapHeight;
+    public static int mapWidth;
+    public static int startEnergy;
+    public static int moveEnergy;
+    public static int plantEnergy;
+    public static double jungleRatio;
+    public static boolean grassMagic;
+    public static boolean rectangularMagic;
+    public static int animalsAtStart;
 
     public static void setAnimalsAtStart(int animalsAtStart) {
         Constants.animalsAtStart = animalsAtStart;
     }
 
-//    public static void setStart(boolean start) {
-//        Constants.start = start;
-//    }
 
     public static void setMapHeight(int mapHeight) {
         Constants.mapHeight = mapHeight;

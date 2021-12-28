@@ -1,7 +1,6 @@
 package agh.ics.oop;
 
 import java.util.*;
-import java.lang.Math;
 
 public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver {
 
@@ -27,6 +26,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     protected Vector2d jungleLL;
     protected boolean magicField;
     protected int magicTimes = 3;
+    protected boolean magicHappend = false;
 
 
     protected Files file;
@@ -105,20 +105,31 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     public void magicEvolution(){
         if(animals.size() == 5 && magicField && magicTimes > 0){
             Animal newAnim;
+            Animal animal;
             Vector2d cords;
-            for(Animal animal : animals){
+            for( int i = 0; i < 5; i++){
+                animal = animals.get(i);
                 cords = cordsGenerator();
                 while(animalsLinked.containsKey(cords) || grasses.containsKey(cords)){
                     cords = cordsGenerator();
                 }
                 newAnim = new Animal(this, cords, startEnergy);
                 newAnim.genes = animal.getGenes();
+
+                animals.add(newAnim);
+                addAnimal(newAnim.getPosition(), newAnim);
+                newAnim.addObserver(this);
             }
+            magicTimes -= 1;
+            System.out.println(animals.size());
+        }
+        if(magicTimes == 0){
+            this.magicHappend = true;
             magicTimes -= 1;
         }
     }
 
-    public void multiplication(){
+    public void multiplication(int day){
         Animal mother;
         Animal father;
         for(LinkedList<Animal> animalsAtPos : animalsLinked.values()) {
@@ -138,14 +149,13 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                     } else if (animal.getEnergy() > mother.getEnergy()) mother = animal;
                 }
                 if(father.getEnergy() >= startEnergy*(0.5) && mother.getEnergy() >= startEnergy*(0.5)) {
-                    Animal child = father.copulation(mother);
+                    Animal child = father.copulation(mother, day);
                     animals.add(child);
                     addAnimal(child.getPosition(), child);
                     child.addObserver(this);
                 }
             }
         }
-//        System.out.println(animals);
     }
 
     public void eatGrass(Animal animal, Vector2d position, int part){
@@ -180,12 +190,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         }
     }
 
-    protected boolean placeAnimal(Animal animal){
-        addAnimal(animal.getPosition(), animal);
-        animals.add(animal);
-        animal.addObserver(this);
-        return true;
-    }
 
     protected void placeAnimalInJungle(){
         Vector2d tmp = cordsGenerator();
@@ -207,7 +211,8 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         for(int i = 0; i < animals.size(); i++){
             Animal anim = animals.get(i);
             if(anim.isDead()){
-                lifeTime += day;
+                lifeTime += day - anim.getBirth();
+                //co jezeli animal urodzil sie 10 dnia a umar 15
                 removeAnimal(anim.getPosition(), anim);
                 animals.remove(anim);
                 anim.removeObserver(this);
@@ -236,7 +241,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     }
 
 
-    //nakładanie trawy na mapę
     protected void plantGrass(){
 //        najpierw w jungli
         Vector2d tmp;
@@ -321,4 +325,8 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     public Files getFile() {return file;}
 
     public int getLifeTime() {return lifeTime;}
+
+    public boolean isMagicHappend() {
+        return magicHappend;
+    }
 }

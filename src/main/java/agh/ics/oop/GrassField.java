@@ -7,8 +7,6 @@ import java.lang.Math;
 public class GrassField extends AbstractWorldMap {
 
 
-
-
     public GrassField(int mapHeight, int mapWidth, double jungleRatio, int startEnergy, int animalsAtStart, int plantEnergy, int moveEnergy, boolean magic){
 //map
         this.startEnergy = startEnergy;

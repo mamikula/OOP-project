@@ -17,6 +17,7 @@ public class Animal implements IMapElement {
     private int startEnergy;
     private int energy;
     public Genes genes;
+    private int birth;
 
     //   --------------------New items-----------------------
     public Animal(IWorldMap map, Vector2d initialPosition, int energy) {
@@ -27,7 +28,22 @@ public class Animal implements IMapElement {
         this.energy = energy;
         this.startEnergy = energy;
         genes = new Genes(8, 32);
+        this.birth = 0;
     }
+    //potrzebne tylko do obliczania średniej długości życia dla martwych, robiłem na sam koniec i nie dał bym rady zmienić kodu w całym
+    //projekcie żeby był jeden :(
+    public Animal(IWorldMap map, Vector2d initialPosition, int energy, int day) {
+        this.position = initialPosition;
+        this.map = map;
+        this.orientation = MapDirection.EAST.randomDirection();
+        this.subscribers = new ArrayList<>();
+        this.energy = energy;
+        this.startEnergy = energy;
+        genes = new Genes(8, 32);
+        this.birth = day;
+    }
+
+
 
     //    ENERGY SECTION
     public boolean isDead() {
@@ -40,13 +56,13 @@ public class Animal implements IMapElement {
     }
 
     //COPULATION
-    public Animal copulation(Animal mother) {
+    public Animal copulation(Animal mother, int day) {
 
         int childEnergy = (int) (0.25 * mother.energy) + (int) (this.energy * 0.25);
         mother.changeEnergy((int) -(0.25 * mother.energy));
         this.changeEnergy((int) -(this.energy * 0.25));
 
-        Animal child = new Animal(map, mother.getPosition(), childEnergy);
+        Animal child = new Animal(map, mother.getPosition(), childEnergy, day);
         child.genes = new Genes(this, mother);
 
         return child;
@@ -114,6 +130,10 @@ public class Animal implements IMapElement {
 
     public Genes getGenes() {
         return genes;
+    }
+
+    public int getBirth() {
+        return birth;
     }
 
 

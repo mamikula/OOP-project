@@ -23,7 +23,7 @@ public class LineChartClass {
         series2 = new XYChart.Series();
         series3 = new XYChart.Series();
         series4 = new XYChart.Series();
-        lineChart.setMaxSize(600, 300);
+        lineChart.setMaxSize(600, 400);
         lineChart.getData().addAll(series1, series2, series3, series4);
         series1.setName("Animal");
         series2.setName("Grass");

@@ -9,13 +9,16 @@ import javafx.beans.property.ObjectProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.w3c.dom.css.Rect;
 
@@ -23,16 +26,17 @@ import java.util.Objects;
 
 
 public class App extends Application implements ISimulationObserver{
-    protected GridPane gridpane;
-    protected GridPane gridpane2;
+    private GridPane gridpane;
+    private GridPane gridpane2;
     private GridPane initGrid;
-    protected GrassField map;
+    private GrassField map;
     private RectangularMap map2;
-    protected SimulationEngine engine;
-    protected SimulationEngine engine2;
-    protected BorderPane borderPane;
-    protected LineChartClass grassFieldChart;
-    protected LineChartClass rectangularChart;
+    private SimulationEngine engine;
+    private SimulationEngine engine2;
+    private BorderPane borderPane;
+    private LineChartClass grassFieldChart;
+    private LineChartClass rectangularChart;
+    private GridPane alertGrid = new GridPane();
     public boolean flag1 = true;
     public boolean flag2 = true;
 
@@ -55,54 +59,56 @@ public class App extends Application implements ISimulationObserver{
 
         //InputFrom section
         initGrid = new GridPane();
+        initGrid.setAlignment(Pos.CENTER);
         borderPane.setCenter(initGrid);
+
 
         Label mapHeightText = new Label("Map Width:");
         initGrid.add(mapHeightText, 0, 2);
-        TextField mapHeight = new TextField();
+        TextField mapHeight = new TextField("10");
         initGrid.add(mapHeight, 1, 2);
 
         Label mapWidthText = new Label("Map Width:");
         initGrid.add(mapWidthText, 0, 1);
-        TextField mapWidth = new TextField();
+        TextField mapWidth = new TextField("10");
         initGrid.add(mapWidth, 1, 1);
 
         Label startEnergyText = new Label("Start Energy:");
         initGrid.add(startEnergyText, 0, 3);
-        TextField startEnergy = new TextField();
+        TextField startEnergy = new TextField("10");
         initGrid.add(startEnergy, 1, 3);
 
         Label moveText = new Label("Move Energy:");
         initGrid.add(moveText, 0, 4);
-        TextField moveEnergy = new TextField();
+        TextField moveEnergy = new TextField("1");
         initGrid.add( moveEnergy, 1, 4);
 
         Label plantText = new Label("Plant energy:");
         initGrid.add(plantText, 0, 5);
-        TextField plantEnergy = new TextField();
+        TextField plantEnergy = new TextField("10");
         initGrid.add(plantEnergy, 1, 5);
 
-        Label ratioText = new Label("Jungle ratio:");
+        Label ratioText = new Label("Jungle ratio (double from (0, 1)):");
         initGrid.add(ratioText, 0, 6);
-        TextField jungleRatio = new TextField();
+        TextField jungleRatio = new TextField("0.5");
         initGrid.add(jungleRatio, 1, 6);
 
-        Label mapGrassMagic = new Label("Grass Magic Evolution:");
+        Label mapGrassMagic = new Label("Grass Magic Evolution(boolean):");
         initGrid.add(mapGrassMagic, 0, 7);
-        TextField grassMagic = new TextField();
+        TextField grassMagic = new TextField("true");
         initGrid.add(grassMagic, 1, 7);
 
-        Label mapRectangularMagic = new Label("Rectangular Magic Evolution:");
+        Label mapRectangularMagic = new Label("Rectangular Magic Evolution(boolean):");
         initGrid.add(mapRectangularMagic, 0, 8);
-        TextField rectangularMagic = new TextField();
+        TextField rectangularMagic = new TextField("true");
         initGrid.add(rectangularMagic, 1, 8);
 
         Label startAnimals = new Label("Animals at start:");
         initGrid.add(startAnimals, 0, 9);
-        TextField animalsAtStart = new TextField();
+        TextField animalsAtStart = new TextField("10");
         initGrid.add(animalsAtStart, 1, 9);
 
-        Button btn = new Button("Send");
+        Button btn = new Button("Start simulation");
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(btn);
@@ -135,14 +141,16 @@ public class App extends Application implements ISimulationObserver{
             this.gridpane2 = new GridPane();
 
             chartGrid = new GridPane();
-            chartGrid.setPrefSize(600, 600);
+            chartGrid.setPrefSize(600, 800);
             grassFieldChart = new LineChartClass();
+            grassFieldChart.getLineChart().setTitle("GrassField line chart");
             grassFieldChart.printChart(0, map.getAnimalsSize(), map.getGrassesSize(), map.avgEnergy(), map.getLifeTime());
             chartGrid.add(grassFieldChart.getLineChart(), 0, 0);
 
 
             rectangularChart = new LineChartClass();
             rectangularChart.printChart(0, map2.getAnimalsSize(),  map2.getGrassesSize(), map2.avgEnergy(), map.getLifeTime());
+            rectangularChart.getLineChart().setTitle("Rectangular map chart");
             chartGrid.add(rectangularChart.getLineChart(), 0, 1);
             borderPane.setCenter(chartGrid);
 
@@ -166,7 +174,6 @@ public class App extends Application implements ISimulationObserver{
             hbBtn1.getChildren().add(btn1);
 
             btn1.setOnAction(e1 -> {
-
                 if(flag1) {engineThread.suspend(); flag1 = false;}
                 else {engineThread.resume(); flag1 = true;}
             });
@@ -209,7 +216,7 @@ public class App extends Application implements ISimulationObserver{
     }
     public void start(Stage primaryStage) throws Exception {
 
-        Scene scene = new Scene(borderPane, 1200, 600);
+        Scene scene = new Scene(borderPane, 1200, 800);
 
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -283,6 +290,20 @@ public class App extends Application implements ISimulationObserver{
         }
     }
 
+    public void alerts(AbstractWorldMap map){
+        borderPane.setBottom(alertGrid);
+        if(map.isMagicHappend()){
+            if(map instanceof GrassField) {
+                Label magicInfo = new Label("Magic happend 3 times on Grass Field");
+                alertGrid.add(magicInfo, 0, 0);
+            }
+            else {
+                Label magicInfo = new Label("Magic happend 3 times on Rectangular Map");
+                alertGrid.add(magicInfo, 0, 1);
+            }
+
+        }
+    }
 
     int animals;
     int grasses;
@@ -290,6 +311,7 @@ public class App extends Application implements ISimulationObserver{
     public void changesUpdate(AbstractWorldMap map) {
         Platform.runLater(()->{
             draw(map);
+            alerts(map);
             if(map instanceof GrassField) {
                 day1 += 1;
                 animals = map.getAnimalsSize();
