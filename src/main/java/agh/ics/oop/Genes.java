@@ -8,7 +8,7 @@ public class Genes {
     private int genesNum;
 
     public int[] getGenes() {
-        return genes;
+        return genes;   // zwraca Pan na zewnątrz obiekt modyfikowalny
     }
 
     public Genes(int genesNum, int size) {
@@ -54,7 +54,7 @@ public class Genes {
         Arrays.sort(this.genes);
     }
 
-    private void makeProprielyGen() {
+    private void makeProprielyGen() {   // co robi ta metoda?
         int[] valid = new int[8];
         boolean flag = true;
         while(flag) {

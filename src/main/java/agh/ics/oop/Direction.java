@@ -1,7 +1,7 @@
 package agh.ics.oop;
 
 
-public enum Direction {
+public enum Direction { // do usunięcia
     FORWARD,
     BACKWARD,
     RIGHT,

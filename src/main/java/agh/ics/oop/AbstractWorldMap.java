@@ -35,32 +35,31 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     private int lifeTime = 0;
 
 
-
-    public int[] countData(int day){
+    public int[] countData(int day) {
         animalsCounter += animals.size();
         grassesCounter += grasses.size();
-        return new int[]{animalsCounter, grassesCounter, lifeTime/(day + 1)};
+        return new int[]{animalsCounter, grassesCounter, lifeTime / (day + 1)};
     }
 
-    public int avgEnergy(){
+    public int avgEnergy() {    // czy tym się powinna zajmować mapa?
         int enacnt = 0;
-        for(Animal animal : animals){
+        for (Animal animal : animals) {
             enacnt += animal.getEnergy();
         }
-        if(!animals.isEmpty()) return enacnt/animals.size();
+        if (!animals.isEmpty()) return enacnt / animals.size();
         else return 0;
     }
 
-    public void removeAnimal(Vector2d key, Animal object){
-        if(this.animalsLinked.get(key) != null){
+    public void removeAnimal(Vector2d key, Animal object) {
+        if (this.animalsLinked.get(key) != null) {
             this.animalsLinked.get(key).remove(object);
-            if(this.animalsLinked.get(key).isEmpty()) animalsLinked.remove(key);
+            if (this.animalsLinked.get(key).isEmpty()) animalsLinked.remove(key);
         }
     }
 
-    public void addAnimal(Vector2d key, Animal object){
-        if(animalsLinked.containsKey(key)) animalsLinked.get(key).add(object);
-        else{
+    public void addAnimal(Vector2d key, Animal object) {
+        if (animalsLinked.containsKey(key)) animalsLinked.get(key).add(object);
+        else {
             LinkedList<Animal> list = new LinkedList<>();
             list.add(object);
             animalsLinked.put(key, list);
@@ -91,10 +90,10 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
     @Override
     public Object objectAt(Vector2d position) {
-        if (animalsLinked.get(position) != null){
+        if (animalsLinked.get(position) != null) {
             LinkedList<Animal> tmpList = animalsLinked.get(position);
             Animal tmpAnimal = new Animal(this, new Vector2d(-1, -1), -100);
-            for(Animal animal : tmpList){
+            for (Animal animal : tmpList) {
                 if (animal.getEnergy() > tmpAnimal.getEnergy()) tmpAnimal = animal;
             }
             return tmpAnimal;
@@ -102,15 +101,15 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         return grasses.get(position);
     }
 
-    public void magicEvolution(){
-        if(animals.size() == 5 && magicField && magicTimes > 0){
+    public void magicEvolution() {
+        if (animals.size() == 5 && magicField && magicTimes > 0) {
             Animal newAnim;
             Animal animal;
             Vector2d cords;
-            for( int i = 0; i < 5; i++){
+            for (int i = 0; i < 5; i++) {
                 animal = animals.get(i);
                 cords = cordsGenerator();
-                while(animalsLinked.containsKey(cords) || grasses.containsKey(cords)){
+                while (animalsLinked.containsKey(cords) || grasses.containsKey(cords)) {
                     cords = cordsGenerator();
                 }
                 newAnim = new Animal(this, cords, startEnergy);
@@ -123,17 +122,17 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
             magicTimes -= 1;
             System.out.println(animals.size());
         }
-        if(magicTimes == 0){
+        if (magicTimes == 0) {
             this.magicHappend = true;
             magicTimes -= 1;
         }
     }
 
-    public void multiplication(int day){
+    public void multiplication(int day) {
         Animal mother;
         Animal father;
-        for(LinkedList<Animal> animalsAtPos : animalsLinked.values()) {
-            if (animalsAtPos.size() > 1) {
+        for (LinkedList<Animal> animalsAtPos : animalsLinked.values()) { // czy ta lista jest posortowana?
+            if (animalsAtPos.size() > 1) {  // a co z remisami?
                 if (animalsAtPos.get(0).getEnergy() > animalsAtPos.get(1).getEnergy()) {
                     mother = animalsAtPos.get(1);
                     father = animalsAtPos.get(0);
@@ -148,7 +147,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                         father = animal;
                     } else if (animal.getEnergy() > mother.getEnergy()) mother = animal;
                 }
-                if(father.getEnergy() >= startEnergy*(0.5) && mother.getEnergy() >= startEnergy*(0.5)) {
+                if (father.getEnergy() >= startEnergy * (0.5) && mother.getEnergy() >= startEnergy * (0.5)) {
                     Animal child = father.copulation(mother, day);
                     animals.add(child);
                     addAnimal(child.getPosition(), child);
@@ -158,43 +157,46 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         }
     }
 
-    public void eatGrass(Animal animal, Vector2d position, int part){
+    public void eatGrass(Animal animal, Vector2d position, int part) {
         Grass grass = grasses.get(position);
-        animal.changeEnergy( (int)grass.getEnergy()/part);
+        animal.changeEnergy((int) grass.getEnergy() / part);
     }
 
-    public void whoCanEat(){
+    public void whoCanEat() {
         LinkedList<Vector2d> grassesToDel = new LinkedList();
-        for(Vector2d position : grasses.keySet()){
-            if(animalsLinked.containsKey(position)){
+        for (Vector2d position : grasses.keySet()) {
+            if (animalsLinked.containsKey(position)) {
 
                 LinkedList<Animal> list = animalsLinked.get(position);
                 grassesToDel.add(position);
 
-                if(list.size() == 1) {eatGrass(list.get(0), position, 1);}
-                else{
+                if (list.size() == 1) {
+                    eatGrass(list.get(0), position, 1);
+                } else {
                     int maxenergy = 0;
                     int part = 1;
-                    for(Animal animal : list){
-                        if(animal.getEnergy() > maxenergy){ maxenergy = (int) animal.getEnergy(); part = 1;}
-                        else if(animal.getEnergy() == maxenergy) part += 1;
+                    for (Animal animal : list) {
+                        if (animal.getEnergy() > maxenergy) {
+                            maxenergy = (int) animal.getEnergy();
+                            part = 1;
+                        } else if (animal.getEnergy() == maxenergy) part += 1;
                     }
-                    for(Animal animal : list){
-                        if(animal.getEnergy() == maxenergy) eatGrass(animal, position, part);
+                    for (Animal animal : list) {
+                        if (animal.getEnergy() == maxenergy) eatGrass(animal, position, part);
                     }
                 }
             }
         }
-        for(Vector2d toDel : grassesToDel){
+        for (Vector2d toDel : grassesToDel) {
             grasses.remove(toDel);
         }
     }
 
 
-    protected void placeAnimalInJungle(){
+    protected void placeAnimalInJungle() {
         Vector2d tmp = cordsGenerator();
-        for(int i = 0; i < animalsAtStart; i++){
-            if(jungleObs() < jungleWidth*jungleHeight) {
+        for (int i = 0; i < animalsAtStart; i++) {
+            if (jungleObs() < jungleWidth * jungleHeight) {
                 while (!(!animalsLinked.containsKey(tmp) && inJungle(tmp))) {
                     tmp = cordsGenerator();
                 }
@@ -207,10 +209,10 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         }
     }
 
-    public void removeDeadAnimals(int day){
-        for(int i = 0; i < animals.size(); i++){
+    public void removeDeadAnimals(int day) {
+        for (int i = 0; i < animals.size(); i++) {
             Animal anim = animals.get(i);
-            if(anim.isDead()){
+            if (anim.isDead()) {
                 lifeTime += day - anim.getBirth();
                 //co jezeli animal urodzil sie 10 dnia a umar 15
                 removeAnimal(anim.getPosition(), anim);
@@ -241,22 +243,22 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     }
 
 
-    protected void plantGrass(){
+    protected void plantGrass() {
 //        najpierw w jungli
-        Vector2d tmp;
+        Vector2d tmp;   // mało mówiąca nazwa
         int jungleObjects = jungleObs();
-        while (jungleObjects < jungleHeight*jungleWidth){
+        while (jungleObjects < jungleHeight * jungleWidth) {
             tmp = cordsGenerator();
-            if (!grasses.containsKey(tmp) && !animalsLinked.containsKey(tmp) && inJungle(tmp)){
+            if (!grasses.containsKey(tmp) && !animalsLinked.containsKey(tmp) && inJungle(tmp)) {
                 grasses.put(tmp, new Grass(tmp, plantEnergy));
                 break;
             }
         }
 //        na sawannie
         int sawannaObjects = sawannaObs();
-        while(sawannaObjects < (mapHeight + 1) * (mapWidth + 1) - jungleWidth*jungleHeight){
+        while (sawannaObjects < (mapHeight + 1) * (mapWidth + 1) - jungleWidth * jungleHeight) { // czemu szerokość+1?
             tmp = cordsGenerator();
-            if(atSawanna(tmp) && objectAt(tmp) == null){
+            if (atSawanna(tmp) && objectAt(tmp) == null) {
                 grasses.put(tmp, new Grass(tmp, plantEnergy));
                 break;
             }
@@ -264,45 +266,47 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     }
 
     //HELPERS
-    public int jungleObs(){
+    public int jungleObs() {
         int counter = 0;
-        for(Vector2d key : animalsLinked.keySet()){
-            if(inJungle(key)) counter++;
+        for (Vector2d key : animalsLinked.keySet()) {
+            if (inJungle(key)) counter++;
         }
-        for(Vector2d key : grasses.keySet()){
-            if(inJungle(key)) counter++;
+        for (Vector2d key : grasses.keySet()) {
+            if (inJungle(key)) counter++;
         }
         return counter;
     }
 
-    public int sawannaObs(){
+    public int sawannaObs() {
         int counter = 0;
-        for(Vector2d key : animalsLinked.keySet()){
-            if(!inJungle(key)) counter++;
+        for (Vector2d key : animalsLinked.keySet()) {
+            if (!inJungle(key)) counter++;
         }
-        for(Vector2d key : grasses.keySet()){
-            if(!inJungle(key)) counter++;
+        for (Vector2d key : grasses.keySet()) {
+            if (!inJungle(key)) counter++;
         }
 
         return counter;
     }
 
 
-    public Vector2d cordsGenerator(){
+    public Vector2d cordsGenerator() {
         Random generator = new Random();
         int x = generator.nextInt(mapWidth + 1);
-        int y = generator.nextInt( mapHeight + 1);
+        int y = generator.nextInt(mapHeight + 1);
         return new Vector2d(x, y);
     }
+
     @Override
     public String toString() {
         return new MapVisualizer(this).draw(sawannaLL, sawannaUR);
     }
-    public boolean inJungle(Vector2d position){
+
+    public boolean inJungle(Vector2d position) {
         return position.follows(jungleLL) && position.precedes(jungleUR);
     }
 
-    public boolean atSawanna(Vector2d position){
+    public boolean atSawanna(Vector2d position) {
         return !inJungle(position);
     }
 
@@ -314,17 +318,21 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         return mapWidth;
     }
 
-    public int getAnimalsSize(){
+    public int getAnimalsSize() {
         return animals.size();
     }
 
-    public int getGrassesSize(){
+    public int getGrassesSize() {
         return grasses.size();
     }
 
-    public Files getFile() {return file;}
+    public Files getFile() {
+        return file;
+    }
 
-    public int getLifeTime() {return lifeTime;}
+    public int getLifeTime() {
+        return lifeTime;
+    }
 
     public boolean isMagicHappend() {
         return magicHappend;

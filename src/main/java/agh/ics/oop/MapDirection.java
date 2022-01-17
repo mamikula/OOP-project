@@ -4,9 +4,9 @@ package agh.ics.oop;
 import java.util.Random;
 
 public enum MapDirection {
-    NORTH, SOUTH, WEST, EAST, NORTHWEST, SOUTHWEST, NORTHEAST, SOUTHEAST;
+    NORTH, SOUTH, WEST, EAST, NORTHWEST, SOUTHWEST, NORTHEAST, SOUTHEAST;   // kolejność ma znaczenie
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {    // nie robimy testów w taki sposób, od tego jest JUnit
         MapDirection polnoc = NORTH;
         System.out.println(polnoc.toString());
         System.out.println(polnoc.next());
@@ -54,7 +54,7 @@ public enum MapDirection {
 
     public Vector2d toUnitVector(){
         return switch (this) {
-            case NORTH -> new Vector2d(0,1);
+            case NORTH -> new Vector2d(0,1);    // nowy wektor co wywołanie
             case EAST -> new Vector2d(1,0);
             case SOUTH -> new Vector2d(0,-1);
             case WEST -> new Vector2d(-1,0);
@@ -65,19 +65,9 @@ public enum MapDirection {
         };
     }
 
-    public MapDirection randomDirection(){
-        int random = new Random().nextInt(7);
-        return switch(random){
-            case 0 -> NORTHEAST;
-            case 1 -> SOUTHWEST;
-            case 2 -> NORTHWEST;
-            case 3 -> SOUTHEAST;
-            case 4 -> NORTH;
-            case 5 -> WEST;
-            case 6 -> EAST;
-            case 7 -> SOUTH;
-            default -> throw new IllegalStateException("Unexpected value: " + random);
-        };
+    public static MapDirection randomDirection(){
+        int random = new Random().nextInt(7);   // nowy obiekt co wywołanie
+        return MapDirection.values()[random];
     }
 
 }

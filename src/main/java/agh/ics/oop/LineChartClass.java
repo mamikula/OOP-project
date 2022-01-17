@@ -5,7 +5,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 
 
-public class LineChartClass {
+public class LineChartClass {   // a to nie jest część GUI?
 //    https://docs.oracle.com/javafx/2/charts/line-chart.htm
     final NumberAxis xAxis;
     final NumberAxis yAxis;

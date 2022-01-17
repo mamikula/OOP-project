@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 
 public class Grass implements IMapElement{
     private Vector2d position;
-    private float energy;
+    private float energy;   // czy to nie powinna być stała?
 
     public Grass(Vector2d position) {
         this.position = position;
@@ -26,8 +26,8 @@ public class Grass implements IMapElement{
     }
 
     @Override
-    public Image getImage() throws FileNotFoundException {
-        return new Image(new FileInputStream("src/main/resources/grass.png"));
+    public Image getImage() throws FileNotFoundException {  // dobrze by to było przenieść do GUI
+        return new Image(new FileInputStream("src/main/resources/grass.png"));  // czy jest sens wczytywać ten obrazek od nowa przy każdym wywołaniu?
     }
 
     @Override

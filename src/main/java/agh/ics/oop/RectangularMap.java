@@ -23,7 +23,7 @@ public class RectangularMap extends AbstractWorldMap {
 
 //sawanna
         this.sawannaLL = new Vector2d(0, 0);
-        this.sawannaUR = new Vector2d(mapWidth, mapHeight);
+        this.sawannaUR = new Vector2d(mapWidth, mapHeight); // jaką szerokość ma mapa o szerokości 10?
 //jungle
         double factor = Math.sqrt(jungleRatio);
         this.jungleHeight = (int) (mapHeight * factor);
@@ -53,7 +53,7 @@ public class RectangularMap extends AbstractWorldMap {
     }
 
     public int getAnimalsSize(){
-        return animals.size();
+        return animals.size();  // to by nie mogło być w abstrakcyjnej?
     }
 
     public int getGrassesSize(){

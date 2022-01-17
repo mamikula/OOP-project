@@ -12,7 +12,7 @@ public class Animal implements IMapElement {
     private MapDirection orientation;
     private Vector2d position;
     private IWorldMap map;
-    private List<IPositionChangeObserver> subscribers;
+    private List<IPositionChangeObserver> subscribers;  // observers
 
     private int startEnergy;
     private int energy;
@@ -21,14 +21,7 @@ public class Animal implements IMapElement {
 
     //   --------------------New items-----------------------
     public Animal(IWorldMap map, Vector2d initialPosition, int energy) {
-        this.position = initialPosition;
-        this.map = map;
-        this.orientation = MapDirection.EAST.randomDirection();
-        this.subscribers = new ArrayList<>();
-        this.energy = energy;
-        this.startEnergy = energy;
-        genes = new Genes(8, 32);
-        this.birth = 0;
+        this(map, initialPosition, energy, 0);  // DRY
     }
     //potrzebne tylko do obliczania średniej długości życia dla martwych, robiłem na sam koniec i nie dał bym rady zmienić kodu w całym
     //projekcie żeby był jeden :(
@@ -44,7 +37,6 @@ public class Animal implements IMapElement {
     }
 
 
-
     //    ENERGY SECTION
     public boolean isDead() {
         return this.energy <= 0;
@@ -56,7 +48,7 @@ public class Animal implements IMapElement {
     }
 
     //COPULATION
-    public Animal copulation(Animal mother, int day) {
+    public Animal copulation(Animal mother, int day) {  // nie czytelniej zrobić z tego metodę statyczną przyjmującą dwa zwierzęta, albo konstruktor?
 
         int childEnergy = (int) (0.25 * mother.energy) + (int) (this.energy * 0.25);
         mother.changeEnergy((int) -(0.25 * mother.energy));
@@ -78,7 +70,7 @@ public class Animal implements IMapElement {
         return orientation.toString();
     }
 
-    public void move(MoveDirection direction) {
+    public void move(MoveDirection direction) { // czy ta metoda jest aktualna?
         switch (direction) {
             case RIGHT -> orientation = orientation.next();
             case LEFT -> orientation = orientation.previous();
@@ -86,7 +78,7 @@ public class Animal implements IMapElement {
                 if (map.canMoveTo(position.add(orientation.toUnitVector()))) {
                     Vector2d oldPos = position;
                     position = position.add(orientation.toUnitVector());
-                    positionChanged(oldPos, oldPos.add(orientation.toUnitVector()), this);
+                    positionChanged(oldPos, oldPos.add(orientation.toUnitVector()), this);  // lepiej zapisać starą pozycję, niż ją od nowa liczyć
                 }
 
             }
@@ -124,7 +116,7 @@ public class Animal implements IMapElement {
         }
     }
 
-    public void setPosition(Vector2d position) {
+    public void setPosition(Vector2d position) {    // teleport
         this.position = position;
     }
 
@@ -140,7 +132,7 @@ public class Animal implements IMapElement {
     @Override
     public Image getImage() throws FileNotFoundException {
         if (this.energy < this.startEnergy * 0.7 && this.energy >= this.startEnergy*.5) {
-            return new Image(new FileInputStream("src/main/resources/" +
+            return new Image(new FileInputStream("src/main/resources/" +    // czy te obrazki trzeba wczytywać za każdym wywołaniem metody?
                     switch (this.orientation) {
                         case NORTH -> "up-orange.png";
                         case EAST -> "right-orange.png";
@@ -152,7 +144,7 @@ public class Animal implements IMapElement {
                         case SOUTHEAST -> "southeast-orange.png";
                     }));
         } else if (this.energy < this.startEnergy * 0.5) {
-            return new Image(new FileInputStream("src/main/resources/" +
+            return new Image(new FileInputStream("src/main/resources/" +    // czy w tych nazwach jest jakaś prawidłowość, która by pozwoliła skrócić ten kod?
                     switch (this.orientation) {
                         case NORTH -> "up-red.png";
                         case EAST -> "right-red.png";

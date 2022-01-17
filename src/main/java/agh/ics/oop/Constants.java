@@ -1,7 +1,7 @@
 package agh.ics.oop;
 
 public class Constants {
-    public static int mapHeight;
+    public static int mapHeight;    // każdy może to zmodyfikować - czy to bezpieczne?
     public static int mapWidth;
     public static int startEnergy;
     public static int moveEnergy;
