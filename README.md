@@ -36,8 +36,9 @@ Full project information can be seen [here](https://github.com/apohllo/obiektowe
 <h3>The Final Result</h3>
 <br>
 
-![](https://drive.google.com/file/d/1Pkeq0pEFUJ4RNILWK0KwBYNziOvLGRWw/view?usp=sharing)
-![]()
+![](https://github.com/mamikula/OOP-project/blob/master/screen/start.png)
+
+![](https://github.com/mamikula/OOP-project/blob/master/screen/simulation.png)
 
 
 
