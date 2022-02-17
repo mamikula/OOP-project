@@ -35,10 +35,13 @@ Full project information can be seen [here](https://github.com/apohllo/obiektowe
 
 <h3>The Final Result</h3>
 <br>
+<p align="center">
+    <img align="center" src="https://github.com/mamikula/OOP-project/blob/master/screen/start.png">
+</p>
 
-![](https://github.com/mamikula/OOP-project/blob/master/screen/start.png)
-
-![](https://github.com/mamikula/OOP-project/blob/master/screen/simulation.png)
+<p align="center">
+    <img align="center" src="https://github.com/mamikula/OOP-project/blob/master/screen/simulation.png">
+</p>
 
 
 
